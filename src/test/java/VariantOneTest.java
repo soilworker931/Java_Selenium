@@ -27,16 +27,15 @@ public class VariantOneTest {
     private static final String SUCCESS_MESSAGE = String.format("Project %s saved", PROJECT_NAME);
     private static TestRailUtils testRailUtils = new TestRailUtils();
 
-//    @BeforeSuite
-//    public static void createTestRun() {
-//        testRailUtils.addRun();
-//        testRailUtils.signIn();
-//    }
+    @BeforeSuite
+    public static void createTestRun() {
+        testRailUtils.addRun();
+        testRailUtils.signIn();
+    }
 
     @BeforeMethod
     public static void beforeRun() {
         Browser.getBrowser();
-        Browser.goToUrlAndLogin();
         Browser.maximize();
     }
 
@@ -51,8 +50,9 @@ public class VariantOneTest {
         SQL sql = new SQL();
 
         Logger.logStep(1, "Add cookie");
+        Browser.goToUrlAndLogin();
         Assert.assertTrue(projectsPage.pageIsDisplayed(), "Projects page is not displayed");
-        CookiesUtils.addCookie(COOKIES_KEY, RepPortalApi.getToken());
+        Browser.addCookie(COOKIES_KEY, RepPortalApi.getToken());
         Browser.refreshPage();
         Assert.assertTrue(projectsPage.pageIsDisplayed(), "Projects page is not displayed");
         Assert.assertEquals(projectsPage.getFooterText(), FOOTER_TEXT, "Incorrect footer variant is displayed");
@@ -96,15 +96,15 @@ public class VariantOneTest {
         Assert.assertTrue(testPage.getTestCaseEndTime().contains(testCase.getEndTime()));
         Assert.assertEquals(testPage.getTestCaseEnvironment(), testCase.getEnv());
         Assert.assertEquals(testPage.getTestCaseBrowser(), testCase.getBrowser());
-        Assert.assertTrue(testPage.attachmentIsAddedCheck(), "Attachment was not added");
+        Assert.assertTrue(testPage.attachmentIsAddedCheck("attachment.png"), "Attachment was not added");
         Assert.assertTrue(testPage.logsAreAddedCheck(), "Incorrect logs are provided");
     }
 
     @AfterMethod
     public void afterRun(ITestResult result) throws APIException {
         RobotUtil.takeScreenshot("testEnd.png");
-//        testRailUtils.setResultForCase(CASE_ID, TestResult.getId(result), TestResult.getComment(result));
-//        testRailUtils.setAttachmentToResult(CASE_ID, "testEnd");
+        testRailUtils.setResultForCase(CASE_ID, TestResult.getId(result), TestResult.getComment(result));
+        testRailUtils.setAttachmentToResult(CASE_ID, "testEnd");
         Browser.quit();
     }
 }

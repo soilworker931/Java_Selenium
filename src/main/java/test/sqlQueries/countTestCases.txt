@@ -1,0 +1,1 @@
+SELECT COUNT(id) AS total FROM union_reporting.test

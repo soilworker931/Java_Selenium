@@ -1,0 +1,1 @@
+select * from union_reporting.project where name = '%s'

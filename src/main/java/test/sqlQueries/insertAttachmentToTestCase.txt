@@ -1,0 +1,1 @@
+INSERT INTO union_reporting.attachment VALUES (%d, '%s', 'image/png', '%d')

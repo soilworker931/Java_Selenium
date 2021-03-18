@@ -2,11 +2,14 @@ package pages;
 
 import framework.ui.base.BaseForm;
 import framework.ui.elements.Label;
+import framework.utils.ImageConverter;
 import framework.utils.Logger;
 import org.openqa.selenium.By;
 
+import java.io.File;
+
 public class TestPage extends BaseForm {
-    private static final Label ATTACHMENT_IMAGE = new Label(By.xpath("//table[@class='table']//td[contains(text(), 'image/png')]"), "Image/png file");
+    private String attachmentBase64 = "//img[@class='thumbnail' and contains(@src, '%s')]";
     private static final Label LOGS_TEXT = new Label(By.xpath("//div[./div[@class='panel-heading' and text() = 'Logs']]//td"), "Logs");
     private static final Label PROJECT_NAME = new Label(By.xpath(
             "//div[./h4[@class='list-group-item-heading' and text() = 'Project name']]/p[@class='list-group-item-text']"), "Project name");
@@ -32,9 +35,11 @@ public class TestPage extends BaseForm {
         return LOGS_TEXT.isDisplayed();
     }
 
-    public boolean attachmentIsAddedCheck() {
+    public boolean attachmentIsAddedCheck(String screenshotName) {
         Logger.info("Checking that the attachment is added");
-        return ATTACHMENT_IMAGE.isDisplayed();
+        File attachment = new File(String.format("src/main/java/test/resources/%s", screenshotName));
+        Label attachmentLbl = new Label(By.xpath(String.format(attachmentBase64, String.format(ImageConverter.ImageToBase64(attachment.getAbsolutePath())))), "Image");
+        return attachmentLbl.isDisplayed();
     }
 
     public String getProjectName() {

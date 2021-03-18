@@ -1,0 +1,1 @@
+INSERT INTO union_reporting.log VALUES (%d, '%s', '1', '%d')

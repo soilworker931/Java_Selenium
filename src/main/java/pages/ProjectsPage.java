@@ -7,17 +7,16 @@ import framework.ui.elements.Label;
 import framework.ui.elements.TextBox;
 import framework.utils.Logger;
 import org.openqa.selenium.By;
-import pages.forms.AddProjectFrame;
 
 import java.util.ArrayList;
 
 public class ProjectsPage extends BaseForm {
-    private static final Label VARIANT_VERSION_BTN = new Label(By.xpath("//p[@class='text-muted text-center footer-text']/span"), "Version number");
-    private static final Button ADD_PROJECT_BTN = new Button(By.xpath("//button[@class='btn btn-xs btn-primary pull-right']"), "Add+ button");
+    private static final Label VARIANT_VERSION_BTN = new Label(By.xpath("//p[contains(@class, 'footer-text')]/span"), "Version number");
+    private static final Button ADD_PROJECT_BTN = new Button(By.xpath("//button[@data-target='#addProject']"), "Add+ button");
     private static final TextBox ENTER_PROJECT_TBX = new TextBox(By.id("projectName"), "Enter project name field");
     private static final Button SUBMIT_PROJECT_BTN = new Button(By.xpath("//button[@type='submit']"), "Submit project");
-    private static final AddProjectFrame ADD_PROJECT_FRAME = new AddProjectFrame(By.id("addProjectFrame"), "Add project frame");
-    private static final Label SUCCESS_MESSAGE = new Label(By.xpath("//div[@class='alert alert-success']"), "Success message");
+    private static final String ADD_PROJECT_FRAME_ID = "addProjectFrame";
+    private static final Label SUCCESS_MESSAGE = new Label(By.xpath("//div[contains(@class, 'alert-success')]"), "Success message");
     private static final Label PROJECTS = new Label(By.xpath("//a[@class='list-group-item']"), "Project");
 
     public ProjectsPage() {
@@ -50,15 +49,15 @@ public class ProjectsPage extends BaseForm {
 
     public void enterProjectName(String projectName) {
         Logger.info("Entering project: " + projectName);
-        ADD_PROJECT_FRAME.selectIFrameElement(ADD_PROJECT_FRAME.getElement().getAttribute("id"));
+        Browser.selectIFrameElement(ADD_PROJECT_FRAME_ID);
         ENTER_PROJECT_TBX.typeText(projectName);
-        ADD_PROJECT_FRAME.switchToDefaultContent();
+        Browser.switchToDefaultContent();
     }
 
     public void submitProjectName() {
-        ADD_PROJECT_FRAME.selectIFrameElement(ADD_PROJECT_FRAME.getElement().getAttribute("id"));
+        Browser.selectIFrameElement(ADD_PROJECT_FRAME_ID);
         SUBMIT_PROJECT_BTN.click();
-        ADD_PROJECT_FRAME.switchToDefaultContent();
+        Browser.switchToDefaultContent();
     }
 
 
@@ -69,9 +68,9 @@ public class ProjectsPage extends BaseForm {
     }
 
     public String getSuccessMessage() {
-        ADD_PROJECT_FRAME.selectIFrameElement(ADD_PROJECT_FRAME.getElement().getAttribute("id"));
+        Browser.selectIFrameElement(ADD_PROJECT_FRAME_ID);
         String message = SUCCESS_MESSAGE.getElement().getText();
-        ADD_PROJECT_FRAME.switchToDefaultContent();
+        Browser.switchToDefaultContent();
         return message;
     }
 

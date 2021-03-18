@@ -26,7 +26,7 @@ public class ProjectPage extends BaseForm {
     public ArrayList<Date> getCasesStartTimeOnThePage() {
         int testNumber = 2;
         ArrayList<Date>dateList = new ArrayList<>();
-        for (int i = 0; i < getTestsQuantity() - 1; i++) {
+        for (int i = 0; i < getTestsQuantity(); i++) {
             Label caseDate = new Label(By.xpath(String.format("//tbody/tr[%d]/td[4]", testNumber)), String.format("test case: %d", i+1));
             dateList.add(DateUtils.stringToDate(caseDate.getElementText()));
             testNumber++;

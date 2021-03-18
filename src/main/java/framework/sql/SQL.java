@@ -26,7 +26,7 @@ public class SQL {
 
     public int getProjectId(String projectName) throws SQLException {
         Logger.info("Getting project id");
-        String projectIdQuery = String.format("select * from union_reporting.project where name = '%s'", projectName);
+        String projectIdQuery = String.format(FileUtils.readFile("src/main/java/test/sqlQueries/getProjectId.txt"), projectName);
         ResultSet resultSet = statement.executeQuery(projectIdQuery);
         while(resultSet.next()) {
             if (resultSet.getString("name").equals(projectName)) {
@@ -39,7 +39,7 @@ public class SQL {
 
     public int generateLastTestCaseId(SQLTestCase testCase) throws SQLException {
         Logger.info("Getting test case id to create");
-        String query = "SELECT COUNT(id) AS total FROM union_reporting.test";
+        String query = FileUtils.readFile("src/main/java/test/sqlQueries/countTestCases.txt");
         ResultSet resultSet = statement.executeQuery(query);
         while(resultSet.next()) {
             testCase.setCaseId(resultSet.getInt("total") + 1);
@@ -50,7 +50,7 @@ public class SQL {
 
     public int generateLastAttachmentId() throws SQLException {
         Logger.info("Getting attachment id to create");
-        String query = "SELECT COUNT(id) AS total FROM union_reporting.attachment";
+        String query = FileUtils.readFile("src/main/java/test/sqlQueries/countAttachments.txt");
         ResultSet resultSet = statement.executeQuery(query);
         while(resultSet.next()) {
             return (resultSet.getInt("total") + 1);
@@ -60,7 +60,7 @@ public class SQL {
 
     public int generateLastLogId() throws SQLException {
         Logger.info("Getting log od to create");
-        String query = "SELECT COUNT(id) AS total FROM union_reporting.log";
+        String query = FileUtils.readFile("src/main/java/test/sqlQueries/countLogs.txt");
         ResultSet resultSet = statement.executeQuery(query);
         while(resultSet.next()) {
             return (resultSet.getInt("total") + 1);
@@ -81,7 +81,7 @@ public class SQL {
 
     public void insertTestResultsToProject(SQLTestCase testCase, String projectName) throws SQLException {
         Logger.info("Inserting test results to the project");
-        String query = String.format("INSERT INTO union_reporting.test VALUES ('%d', '%s', %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s', null)",
+        String query = String.format(FileUtils.readFile("src/main/java/test/sqlQueries/insertTestResultsToProject.txt"),
                 generateLastTestCaseId(testCase), testCase.getTestName(), testCase.getStatusId(), testCase.getMethodName(),
                 getProjectId(projectName), testCase.getSessionId(), testCase.getStartTime(), testCase.getEndTime(), testCase.getEnv(), testCase.getBrowser());
         statement.executeUpdate(query);
@@ -89,8 +89,8 @@ public class SQL {
 
     public void insertAttachmentsToResult(SQLTestCase testCase, String screenshotName) throws SQLException {
         Logger.info("Inserting attachments to the case");
-        File attachment = new File(String.format("src/main/java/test/resources/%s", screenshotName) );
-        String query = String.format("INSERT INTO union_reporting.attachment VALUES (%d, '%s', 'image/png', '%d')",
+        File attachment = new File(String.format("src/main/java/test/resources/%s", screenshotName));
+        String query = String.format(FileUtils.readFile("src/main/java/test/sqlQueries/insertAttachmentToTestCase.txt"),
                 generateLastAttachmentId(), ImageConverter.ImageToBase64(attachment.getAbsolutePath()), testCase.getCaseId());
         statement.executeUpdate(query);
     }
@@ -98,7 +98,7 @@ public class SQL {
     public void insertLogsToResult(SQLTestCase testCase) throws SQLException {
         Logger.info("Inserting logs to the case");
         File log = new File("log.out");
-        String query = String.format("INSERT INTO union_reporting.log VALUES (%d, '%s', '1', '%d')",
+        String query = String.format(FileUtils.readFile("src/main/java/test/sqlQueries/insertLogsToTestCaseResult.txt"),
                 generateLastLogId(), FileUtils.readFile(log.getAbsolutePath()), testCase.getCaseId());
         statement.executeUpdate(query);
     }

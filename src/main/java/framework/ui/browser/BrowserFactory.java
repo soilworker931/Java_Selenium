@@ -27,7 +27,7 @@ public class BrowserFactory {
                 driver = getFirefoxInstance(language);
                 break;
             default:
-                throw new RuntimeException("the browser you chose does not exist");
+                throw new IllegalArgumentException("the browser you chose does not exist");
         }
         return driver;
     }
